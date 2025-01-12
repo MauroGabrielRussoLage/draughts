@@ -1,0 +1,14 @@
+dependencies {
+    implementation project(':service-use-cases')
+    implementation project(':model')
+
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.security:spring-security-core'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.7.0'
+
+    compileOnly("org.projectlombok:lombok:1.18.36")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    testCompileOnly("org.projectlombok:lombok:1.18.36")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+}

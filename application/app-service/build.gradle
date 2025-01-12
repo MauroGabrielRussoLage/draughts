@@ -1,0 +1,15 @@
+dependencies {
+    implementation project(':rabbit-properties')
+    implementation project(':rabbit-info-bus')
+    implementation project(':service-use-cases')
+    implementation project(':mongo-repository')
+    implementation project(":event-publisher-adapters")
+    implementation project(':jwt')
+    implementation project(':web')
+    implementation project(':web-security')
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}

@@ -1,0 +1,30 @@
+rootProject.name = 'draughts'
+
+include 'app-logs'
+findProject(':app-logs').projectDir = file('./application/app-logs')
+include 'app-service'
+findProject(':app-service').projectDir = file('./application/app-service')
+include 'log-use-cases'
+findProject(':log-use-cases').projectDir = file('./domain/log-use-cases')
+include 'service-use-cases'
+findProject(':service-use-cases').projectDir = file('./domain/service-use-cases')
+include 'model'
+findProject(':model').projectDir = file('./domain/model')
+include 'event-publisher-adapters'
+findProject(':event-publisher-adapters').projectDir = file('./infrastructure/driven-adapters/event-publisher-adapters')
+include 'mongo-repository'
+findProject(':mongo-repository').projectDir = file('./infrastructure/driven-adapters/mongo-repository')
+include 'rabbit-info-bus'
+findProject(':rabbit-info-bus').projectDir = file('./infrastructure/driven-adapters/rabbit-info-bus')
+include 'rabbit-listener-bus'
+findProject(':rabbit-listener-bus').projectDir = file('./infrastructure/entry-points/rabbit-listener-bus')
+include 'web'
+findProject(':web').projectDir = file('./infrastructure/entry-points/web')
+include 'web-security'
+findProject(':web-security').projectDir = file('./infrastructure/entry-points/web-security')
+include 'jwt'
+findProject(':jwt').projectDir = file('./infrastructure/helper/jwt')
+include ':serializer'
+findProject(':serializer').projectDir = file('./infrastructure/helper/serializer')
+include 'rabbit-properties'
+findProject(':rabbit-properties').projectDir = file('./shared/rabbit-properties')

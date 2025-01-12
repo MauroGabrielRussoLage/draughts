@@ -1,0 +1,9 @@
+dependencies {
+    implementation project(":rabbit-properties")
+    implementation project(':log-use-cases')
+    implementation project(":rabbit-info-bus")
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+}
