@@ -2,7 +2,7 @@ package ec.com.sofka.mapper;
 
 import ec.com.sofka.data.GameDocument;
 import ec.com.sofka.entity.board.value.object.Box;
-import ec.com.sofka.gateway.dto.GameDTO;
+import ec.com.sofka.gateway.querySideDTO.GameDTO;
 import org.springframework.beans.BeanUtils;
 import reactor.core.publisher.Mono;
 

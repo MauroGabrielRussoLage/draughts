@@ -1,6 +1,6 @@
 package ec.com.sofka.useCase;
 
-import ec.com.sofka.gateway.dto.GameDTO;
+import ec.com.sofka.gateway.querySideDTO.GameDTO;
 import ec.com.sofka.gateway.repository.GameQuerySideRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -15,6 +15,6 @@ public class UpdateViewGameUseCase {
     }
 
     public Mono<Void> apply(Mono<GameDTO> log) {
-        return repository.saveGame(log);
+        return repository.updateGame(log);
     }
 }

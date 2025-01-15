@@ -1,8 +1,9 @@
-package ec.com.sofka.gateway.dto;
+package ec.com.sofka.gateway.querySideDTO;
 
 import ec.com.sofka.entity.board.value.object.Box;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class GameDTO {
@@ -17,6 +18,7 @@ public class GameDTO {
     private String winner;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private List<MovementDTO> movements;
 
     public GameDTO(Map<String, Map<String, Box>> board,
                    String currentTurn,
@@ -151,5 +153,13 @@ public class GameDTO {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+    public List<MovementDTO> getMovements() {
+        return movements;
+    }
+
+    public void setMovements(List<MovementDTO> movements) {
+        this.movements = movements;
     }
 }

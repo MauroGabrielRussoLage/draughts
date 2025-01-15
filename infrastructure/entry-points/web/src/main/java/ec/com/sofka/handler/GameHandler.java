@@ -76,7 +76,10 @@ public class GameHandler {
                                 .flatMap(authentication ->
                                         gameCommandSideRepository.findById(Mono.just(GameId.of(movementRequestDTO.getGameId())))
                                                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Indicated game does not exist")))
-                                                .flatMap(invitedUser -> {
+                                                .flatMap(gameDTO -> {
+                                                    if ("Game finalized".equals(gameDTO.getStatus())) {
+                                                        return Mono.error(new IllegalArgumentException("The game is already finalized"));
+                                                    }
                                                     MovementCommand command = new MovementCommand.Builder()
                                                             .withAggregateId(movementRequestDTO.getGameId())
                                                             .withPlayerId(authentication.getName())
@@ -87,11 +90,14 @@ public class GameHandler {
                                                             .flatMap(dto -> ServerResponse.ok().bodyValue(dto));
                                                 })
                                 )
-                ).onErrorResume(IllegalArgumentException.class, ex ->
-                        ServerResponse.badRequest().bodyValue(new Response("Illegal argument:" + ex.getMessage()))
-                ).onErrorResume(RuntimeException.class, ex ->
+                )
+                .onErrorResume(IllegalArgumentException.class, ex ->
+                        ServerResponse.badRequest().bodyValue(new Response("Illegal argument: " + ex.getMessage()))
+                )
+                .onErrorResume(RuntimeException.class, ex ->
                         ServerResponse.status(500).bodyValue(new Response("Runtime Exception: " + ex.getMessage()))
-                ).onErrorResume(Exception.class, ex ->
+                )
+                .onErrorResume(Exception.class, ex ->
                         ServerResponse.status(500).bodyValue(new Response("Unexpected server error occurred: " + ex.getMessage()))
                 );
     }

@@ -24,7 +24,7 @@ import java.util.Map;
 public class MovementUseCase {
     private final EventStore repository;
     private final BusMessage busMessage;
-    //TODO Validar dirección de movimientos según color y efctuar
+
     public MovementUseCase(EventStore repository, BusMessage busMessage) {
         this.repository = repository;
         this.busMessage = busMessage;
@@ -91,42 +91,101 @@ public class MovementUseCase {
     }
 
     private Board updateBoard(Board board, MovementCommand command, PieceColor pieceColor) {
-        if (isInvalidDraughtsNotation(command.getDestination()) || isInvalidDraughtsNotation(command.getSource())) {
-            throw new RuntimeException("Invalid chess notation");
-        }
+        validateNotation(command);
         Map<String, Map<String, Box>> boxes = board.getBoxes();
-        String sourceColumn = command.getSource().substring(0, 1);
-        String sourceRow = command.getSource().substring(1);
-        String destinationColumn = command.getDestination().substring(0, 1);
-        String destinationRow = command.getDestination().substring(1);
-        Box sourceBox = boxes.get(sourceColumn).get(sourceRow);
-        Box destinationBox = boxes.get(destinationColumn).get(destinationRow);
+        String sourceColumn = getColumn(command.getSource());
+        String sourceRow = getRow(command.getSource());
+        String destinationColumn = getColumn(command.getDestination());
+        String destinationRow = getRow(command.getDestination());
+        Box sourceBox = getBox(boxes, sourceColumn, sourceRow);
+        Box destinationBox = getBox(boxes, destinationColumn, destinationRow);
+        validateSourceBox(sourceBox, command);
+        validateDestinationBox(destinationBox);
+        validateDiagonalMove(sourceColumn, sourceRow, destinationColumn, destinationRow);
+        if (!"KING".equals(sourceBox.getPieceState())) {
+            validateMoveDirection(pieceColor, sourceRow, destinationRow);
+        }
+        handleCapture(boxes, sourceColumn, sourceRow, destinationColumn, destinationRow);
+        updateBoxes(boxes, sourceColumn, sourceRow, destinationColumn, destinationRow, sourceBox);
+        return board;
+    }
+
+    private void validateNotation(MovementCommand command) {
+        if (isInvalidDraughtsNotation(command.getDestination()) || isInvalidDraughtsNotation(command.getSource())) {
+            throw new IllegalArgumentException("Invalid chess notation");
+        }
+    }
+
+    private String getColumn(String position) {
+        return position.substring(0, 1);
+    }
+
+    private String getRow(String position) {
+        return position.substring(1);
+    }
+
+    private Box getBox(Map<String, Map<String, Box>> boxes, String column, String row) {
+        Map<String, Box> columnBoxes = boxes.get(column);
+        if (columnBoxes == null) {
+            throw new IllegalArgumentException("Invalid move: column does not exist");
+        }
+        Box box = columnBoxes.get(row);
+        if (box == null) {
+            throw new IllegalArgumentException("Invalid move: row does not exist");
+        }
+        return box;
+    }
+
+    private void validateSourceBox(Box sourceBox, MovementCommand command) {
         if (sourceBox == null || sourceBox.getUsername() == null) {
-            throw new RuntimeException("Invalid move: no piece to move");
+            throw new IllegalArgumentException("Invalid move: no piece to move");
         }
         if (!sourceBox.getUsername().equals(command.getPlayerUsername())) {
-            throw new RuntimeException("Cannot move other user's pieces");
+            throw new IllegalArgumentException("Cannot move other user's pieces");
         }
+    }
+
+    private void validateDestinationBox(Box destinationBox) {
         if (destinationBox.getUsername() != null) {
-            throw new RuntimeException("Invalid move: destination is occupied");
+            throw new IllegalArgumentException("Invalid move: destination is occupied");
         }
-        String capturedColumn = null;
-        String capturedRow = null;
-        if (Math.abs(destinationColumn.charAt(0) - sourceColumn.charAt(0)) == 2 &&
-                Math.abs(Integer.parseInt(destinationRow) - Integer.parseInt(sourceRow)) == 2) {
-            capturedColumn = String.valueOf((char) ((sourceColumn.charAt(0) + destinationColumn.charAt(0)) / 2));
-            capturedRow = String.valueOf((Integer.parseInt(sourceRow) + Integer.parseInt(destinationRow)) / 2);
-            Box capturedBox = boxes.get(capturedColumn).get(capturedRow);
-            if (capturedBox == null || capturedBox.getUsername() == null) {
-                throw new RuntimeException("Invalid move: no piece to capture");
+    }
+
+    private void validateDiagonalMove(String sourceColumn, String sourceRow, String destinationColumn, String destinationRow) {
+        int rowDifference = Integer.parseInt(destinationRow) - Integer.parseInt(sourceRow);
+        int columnDifference = destinationColumn.charAt(0) - sourceColumn.charAt(0);
+        if (Math.abs(rowDifference) != Math.abs(columnDifference)) {
+            throw new IllegalArgumentException("Invalid move: pieces must move diagonally");
+        }
+    }
+
+    private void validateMoveDirection(PieceColor pieceColor, String sourceRow, String destinationRow) {
+        int rowDifference = Integer.parseInt(destinationRow) - Integer.parseInt(sourceRow);
+        if (pieceColor.getValue().equals("WHITE") && rowDifference <= 0) {
+            throw new IllegalArgumentException("Invalid move: WHITE pieces must move forward");
+        }
+        if (pieceColor.getValue().equals("BLACK") && rowDifference >= 0) {
+            throw new IllegalArgumentException("Invalid move: BLACK pieces must move forward");
+        }
+    }
+
+    private void handleCapture(Map<String, Map<String, Box>> boxes, String sourceColumn, String sourceRow, String destinationColumn, String destinationRow) {
+        int columnDifference = Math.abs(destinationColumn.charAt(0) - sourceColumn.charAt(0));
+        int rowDifference = Math.abs(Integer.parseInt(destinationRow) - Integer.parseInt(sourceRow));
+        if (columnDifference == 2 && rowDifference == 2) {
+            String capturedColumn = String.valueOf((char) ((sourceColumn.charAt(0) + destinationColumn.charAt(0)) / 2));
+            String capturedRow = String.valueOf((Integer.parseInt(sourceRow) + Integer.parseInt(destinationRow)) / 2);
+            Box capturedBox = getBox(boxes, capturedColumn, capturedRow);
+            if (capturedBox.getUsername() == null) {
+                throw new IllegalArgumentException("Invalid move: no piece to capture");
             }
             boxes.get(capturedColumn).put(capturedRow, new Box(null, null));
         }
-        Box updatedSourceBox = new Box(null, null);
-        Box updatedDestinationBox = new Box(sourceBox.getUsername(), sourceBox.getPieceState());
-        boxes.get(sourceColumn).put(sourceRow, updatedSourceBox);
-        boxes.get(destinationColumn).put(destinationRow, updatedDestinationBox);
-        return board;
+    }
+
+    private void updateBoxes(Map<String, Map<String, Box>> boxes, String sourceColumn, String sourceRow, String destinationColumn, String destinationRow, Box sourceBox) {
+        boxes.get(sourceColumn).put(sourceRow, new Box(null, null));
+        boxes.get(destinationColumn).put(destinationRow, new Box(sourceBox.getUsername(), sourceBox.getPieceState()));
     }
 
     public boolean isInvalidDraughtsNotation(String position) {
