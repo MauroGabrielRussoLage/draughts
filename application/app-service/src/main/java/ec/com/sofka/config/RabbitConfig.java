@@ -21,19 +21,30 @@ public class RabbitConfig {
     }
 
     @Bean
-    public TopicExchange exampleExchange() {
-        return new TopicExchange(globalProperties.getExampleExchangeName());
+    public TopicExchange gameExchange() {
+        return new TopicExchange(globalProperties.getGameExchangeName());
     }
 
     @Bean
-    public Queue exampleQueue() {
-        return new Queue(globalProperties.getExampleQueueName(), true);
+    public Queue gameQueue() {
+        return new Queue(globalProperties.getGameQueueName(), true);
     }
 
     @Bean
-    public Binding exampleBinding(Queue branchTransferQueue, TopicExchange transferExchange) {
-        return BindingBuilder.bind(branchTransferQueue).to(transferExchange)
-                .with(globalProperties.getExampleRoutingKey());
+    public Queue boardQueue() {
+        return new Queue(globalProperties.getBoardQueueName(), true);
+    }
+
+    @Bean
+    public Binding gameBinding(Queue gameQueue, TopicExchange gameExchange) {
+        return BindingBuilder.bind(gameQueue).to(gameExchange)
+                .with(globalProperties.getGameRoutingKey());
+    }
+
+    @Bean
+    public Binding boardBinding(Queue boardQueue, TopicExchange gameExchange) {
+        return BindingBuilder.bind(boardQueue).to(gameExchange)
+                .with(globalProperties.getBoardRoutingKey());
     }
 
     @Bean

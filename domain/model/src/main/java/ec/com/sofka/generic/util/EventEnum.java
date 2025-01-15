@@ -3,7 +3,7 @@ package ec.com.sofka.generic.util;
 public enum EventEnum {
     BOARD_CREATED,
     BOARD_UPDATED,
-    MOVED_PIECE,
+    PIECE_MOVED,
     PLAYER_CREATED,
     USER_LOGGED_IN,
     USER_REGISTERED,

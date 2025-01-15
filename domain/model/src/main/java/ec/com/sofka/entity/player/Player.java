@@ -4,6 +4,7 @@ import ec.com.sofka.entity.player.value.PlayerId;
 import ec.com.sofka.entity.player.value.object.Name;
 import ec.com.sofka.entity.player.value.object.PieceColor;
 import ec.com.sofka.generic.util.Entity;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 public class Player extends Entity<PlayerId> {
     private Name name;
@@ -11,6 +12,13 @@ public class Player extends Entity<PlayerId> {
 
     public Player(Name name, PieceColor pieceColor) {
         super(new PlayerId());
+        this.name = name;
+        this.pieceColor = pieceColor;
+    }
+
+    @PersistenceConstructor
+    public Player(PlayerId id, Name name, PieceColor pieceColor) {
+        super(id);
         this.name = name;
         this.pieceColor = pieceColor;
     }

@@ -1,6 +1,6 @@
 package ec.com.sofka.filters;
 
-import ec.com.sofka.JwtUtil;
+import ec.com.sofka.gateway.TokenProvider;
 import lombok.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,34 +22,28 @@ import java.util.stream.Collectors;
 @Component
 public class JwtAuthorizationFilter implements WebFilter {
 
-    private final JwtUtil jwtUtil;
+    private final TokenProvider tokenProvider;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtAuthorizationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
     }
 
     @Override
     public Mono<Void> filter(
             @NonNull ServerWebExchange exchange,
             @NonNull WebFilterChain filterChain) {
-
         final String authHeader =
                 exchange
                         .getRequest()
                         .getHeaders()
                         .getFirst("Authorization");
-
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return filterChain.filter(exchange);
         }
-
-
         String jwt = authHeader.substring(7);
-        String username = jwtUtil.extractUsername(jwt);
-
+        String username = tokenProvider.extractUsername(jwt);
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Object rolesClaim = jwtUtil.extractAllClaims(jwt).get("roles");
+            Object rolesClaim = tokenProvider.extractAllClaims(jwt).get("roles");
 
             List<GrantedAuthority> authorities;
             if (rolesClaim instanceof List<?>) {
@@ -64,8 +58,7 @@ public class JwtAuthorizationFilter implements WebFilter {
                     .password("")
                     .authorities(authorities)
                     .build();
-
-            if (jwtUtil.isTokenValid(jwt, userDetails)) {
+            if (tokenProvider.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

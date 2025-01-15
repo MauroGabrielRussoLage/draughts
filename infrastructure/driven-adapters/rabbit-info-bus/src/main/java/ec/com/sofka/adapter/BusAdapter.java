@@ -1,7 +1,6 @@
 package ec.com.sofka.adapter;
 
 import ec.com.sofka.GlobalProperties;
-import ec.com.sofka.entity.log.GameEventLog;
 import ec.com.sofka.gateway.BusMessage;
 import ec.com.sofka.generic.domain.DomainEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,14 +21,16 @@ public class BusAdapter implements BusMessage {
 
     @Override
     public Mono<Void> sendMsg(Mono<DomainEvent> monoLog) {
-        return monoLog.flatMap(log ->
+        return monoLog.flatMap(event ->
                 Mono.fromCallable(() -> {
                             rabbitTemplate.convertAndSend(
-                                    globalProperties.getExampleExchangeName(),
-                                    globalProperties.getExampleRoutingKey(),
-                                    log
+                                    globalProperties.getGameExchangeName(),
+                                    event.getEventType().equals("PIECE_MOVED")
+                                            ? globalProperties.getBoardRoutingKey()
+                                            : globalProperties.getGameRoutingKey(),
+                                    event
                             );
-                            return log;
+                            return event;
                         })
                         .then()
         );

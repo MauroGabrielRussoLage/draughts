@@ -7,36 +7,58 @@ import org.springframework.stereotype.Component;
 @Component
 @PropertySource("classpath:app-global.properties")
 public class GlobalProperties {
-    @Value("${example.exchange.name}")
-    private String exampleExchangeName;
+    @Value("${game.exchange.name}")
+    private String gameExchangeName;
 
-    @Value("${example.queue.name}")
-    private String exampleQueueName;
+    @Value("${game.queue.name}")
+    private String gameQueueName;
 
-    @Value("${example.routing.key}")
-    private String exampleRoutingKey;
+    @Value("${board.queue.name}")
+    private String boardQueueName;
 
-    public String getExampleExchangeName() {
-        return exampleExchangeName;
+    @Value("${game.routing.key}")
+    private String gameRoutingKey;
+
+    @Value("${board.routing.key}")
+    private String boardRoutingKey;
+
+    public String getGameExchangeName() {
+        return gameExchangeName;
     }
 
-    public void setExampleExchangeName(String exampleExchangeName) {
-        this.exampleExchangeName = exampleExchangeName;
+    public void setGameExchangeName(String gameExchangeName) {
+        this.gameExchangeName = gameExchangeName;
     }
 
-    public String getExampleQueueName() {
-        return exampleQueueName;
+    public String getGameQueueName() {
+        return gameQueueName;
     }
 
-    public void setExampleQueueName(String exampleQueueName) {
-        this.exampleQueueName = exampleQueueName;
+    public void setGameQueueName(String gameQueueName) {
+        this.gameQueueName = gameQueueName;
     }
 
-    public String getExampleRoutingKey() {
-        return exampleRoutingKey;
+    public String getGameRoutingKey() {
+        return gameRoutingKey;
     }
 
-    public void setExampleRoutingKey(String exampleRoutingKey) {
-        this.exampleRoutingKey = exampleRoutingKey;
+    public void setGameRoutingKey(String gameRoutingKey) {
+        this.gameRoutingKey = gameRoutingKey;
+    }
+
+    public String getBoardQueueName() {
+        return boardQueueName;
+    }
+
+    public void setBoardQueueName(String boardQueueName) {
+        this.boardQueueName = boardQueueName;
+    }
+
+    public String getBoardRoutingKey() {
+        return boardRoutingKey;
+    }
+
+    public void setBoardRoutingKey(String boardRoutingKey) {
+        this.boardRoutingKey = boardRoutingKey;
     }
 }

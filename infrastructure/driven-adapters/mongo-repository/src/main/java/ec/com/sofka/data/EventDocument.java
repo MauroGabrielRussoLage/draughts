@@ -37,7 +37,7 @@ public class EventDocument {
                     .collect(Collectors.joining());
 
             return (DomainEvent) eventSerializer
-                    .readFromJson(this.getEventData(), Class.forName("ec.com.sofka.aggregate.events." + className));
+                    .readFromJson(this.getEventData(), Class.forName("ec.com.sofka.aggregate.event." + className));
         } catch (ClassNotFoundException e) {
             return null;
         }

@@ -10,8 +10,6 @@ include 'service-use-cases'
 findProject(':service-use-cases').projectDir = file('./domain/service-use-cases')
 include 'model'
 findProject(':model').projectDir = file('./domain/model')
-include 'event-publisher-adapters'
-findProject(':event-publisher-adapters').projectDir = file('./infrastructure/driven-adapters/event-publisher-adapters')
 include 'mongo-repository'
 findProject(':mongo-repository').projectDir = file('./infrastructure/driven-adapters/mongo-repository')
 include 'rabbit-info-bus'

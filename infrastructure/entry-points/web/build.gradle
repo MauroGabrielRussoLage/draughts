@@ -1,6 +1,7 @@
 dependencies {
     implementation project(':service-use-cases')
     implementation project(':model')
+    implementation project(':jwt')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.security:spring-security-core'

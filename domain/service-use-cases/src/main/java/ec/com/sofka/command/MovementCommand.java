@@ -2,36 +2,20 @@ package ec.com.sofka.command;
 
 import ec.com.sofka.generic.util.Command;
 
-import java.time.LocalDateTime;
-
 public class MovementCommand extends Command {
-    private String gameId;
-    private String playerId;
+    private String playerUsername;
     private String source;
     private String destination;
-    private LocalDateTime movementDate;
-    private Boolean capturedPieces;
 
-    public MovementCommand(String aggregateId, String gameId, String playerId, String source, String destination, LocalDateTime movementDate, Boolean capturedPieces) {
+    public MovementCommand(String aggregateId, String playerUsername, String source, String destination) {
         super(aggregateId);
-        this.gameId = gameId;
-        this.playerId = playerId;
+        this.playerUsername = playerUsername;
         this.source = source;
         this.destination = destination;
-        this.movementDate = movementDate;
-        this.capturedPieces = capturedPieces;
     }
 
     public MovementCommand(String aggregateId) {
         super(aggregateId);
-    }
-
-    public Boolean getCapturedPieces() {
-        return capturedPieces;
-    }
-
-    public void setCapturedPieces(Boolean capturedPieces) {
-        this.capturedPieces = capturedPieces;
     }
 
     public String getDestination() {
@@ -42,28 +26,12 @@ public class MovementCommand extends Command {
         this.destination = destination;
     }
 
-    public String getGameId() {
-        return gameId;
+    public String getPlayerUsername() {
+        return playerUsername;
     }
 
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
-    public LocalDateTime getMovementDate() {
-        return movementDate;
-    }
-
-    public void setMovementDate(LocalDateTime movementDate) {
-        this.movementDate = movementDate;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
+    public void setPlayerUsername(String playerUsername) {
+        this.playerUsername = playerUsername;
     }
 
     public String getSource() {
@@ -75,21 +43,13 @@ public class MovementCommand extends Command {
     }
 
     public static class Builder {
-        private String gameId;
-        private String playerId;
+        private String playerUsername;
         private String source;
         private String destination;
-        private LocalDateTime movementDate;
-        private Boolean capturedPieces;
         private String aggregateId;
 
-        public Builder withGameId(String gameId) {
-            this.gameId = gameId;
-            return this;
-        }
-
-        public Builder withPlayerId(String playerId) {
-            this.playerId = playerId;
+        public Builder withPlayerId(String playerUsername) {
+            this.playerUsername = playerUsername;
             return this;
         }
 
@@ -109,7 +69,7 @@ public class MovementCommand extends Command {
         }
 
         public MovementCommand build() {
-            return new MovementCommand(aggregateId, gameId, playerId, source, destination, movementDate, capturedPieces);
+            return new MovementCommand(aggregateId, playerUsername, source, destination);
         }
     }
 }

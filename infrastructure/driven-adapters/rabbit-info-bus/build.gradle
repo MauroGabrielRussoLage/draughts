@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation project(":rabbit-properties")
+    implementation project(":mongo-repository")
     implementation project(':model')
     implementation project(':log-use-cases')
     implementation project(':service-use-cases')

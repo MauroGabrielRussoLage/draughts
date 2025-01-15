@@ -1,25 +1,22 @@
 package ec.com.sofka.entity.movement;
 
-import ec.com.sofka.aggregate.value.GameId;
 import ec.com.sofka.entity.movement.value.MovementId;
 import ec.com.sofka.entity.movement.value.object.CapturedPieces;
 import ec.com.sofka.entity.movement.value.object.Coordinate;
 import ec.com.sofka.entity.movement.value.object.MovementDate;
-import ec.com.sofka.entity.player.value.PlayerId;
+import ec.com.sofka.entity.player.value.object.Name;
 import ec.com.sofka.generic.util.Entity;
 
 public class Movement extends Entity<MovementId> {
-    private GameId gameId;
-    private PlayerId playerId;
+    private Name playerName;
     private Coordinate source;
     private Coordinate destination;
     private MovementDate movementDate;
     private CapturedPieces capturedPieces;
 
-    public Movement(GameId gameId, PlayerId playerId, Coordinate source, Coordinate destination, MovementDate movementDate, CapturedPieces capturedPieces) {
+    public Movement(Name playerName, Coordinate source, Coordinate destination, MovementDate movementDate, CapturedPieces capturedPieces) {
         super(new MovementId());
-        this.gameId = gameId;
-        this.playerId = playerId;
+        this.playerName = playerName;
         this.source = source;
         this.destination = destination;
         this.movementDate = movementDate;
@@ -46,14 +43,6 @@ public class Movement extends Entity<MovementId> {
         this.destination = destination;
     }
 
-    public GameId getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(GameId gameId) {
-        this.gameId = gameId;
-    }
-
     public MovementDate getMovementDate() {
         return movementDate;
     }
@@ -62,12 +51,12 @@ public class Movement extends Entity<MovementId> {
         this.movementDate = movementDate;
     }
 
-    public PlayerId getPlayerId() {
-        return playerId;
+    public Name getPlayerName() {
+        return playerName;
     }
 
-    public void setPlayerId(PlayerId playerId) {
-        this.playerId = playerId;
+    public void setPlayerName(Name playerName) {
+        this.playerName = playerName;
     }
 
     public Coordinate getSource() {

@@ -4,21 +4,28 @@ import ec.com.sofka.aggregate.event.GameStarted;
 import ec.com.sofka.aggregate.value.GameId;
 import ec.com.sofka.aggregate.value.object.*;
 import ec.com.sofka.entity.board.Board;
+import ec.com.sofka.entity.movement.Movement;
+import ec.com.sofka.aggregate.event.PieceMoved;
+import ec.com.sofka.entity.movement.value.object.CapturedPieces;
+import ec.com.sofka.entity.movement.value.object.Coordinate;
+import ec.com.sofka.entity.movement.value.object.MovementDate;
 import ec.com.sofka.entity.player.Player;
+import ec.com.sofka.entity.player.value.object.Name;
 import ec.com.sofka.generic.domain.DomainEvent;
 import ec.com.sofka.generic.util.AggregateRoot;
 
 import java.util.List;
 
 public class Game extends AggregateRoot<GameId> {
-    private Player player1;
-    private Player player2;
-    private Board board;
-    private Status status;
-    private CurrentTurn currentTurn;
-    private Winner winner;
-    private StartDate startDate;
-    private EndDate endDate;
+    protected Player player1;
+    protected Player player2;
+    protected Board board;
+    protected Status status;
+    protected CurrentTurn currentTurn;
+    protected Winner winner;
+    protected StartDate startDate;
+    protected EndDate endDate;
+    protected List<Movement> movements;
 
     public Game(final String id) {
         super(GameId.of(id));
@@ -33,12 +40,16 @@ public class Game extends AggregateRoot<GameId> {
     public Game(Player player1, Player player2, Board board, Status status, CurrentTurn currentTurn, StartDate startDate) {
         super(new GameId());
         setSubscription(new GameHandler(this));
-        addEvent(new GameStarted(player1.getId().getValue(),
-                player2.getId().getValue(),
-                board.getId().getValue(),
-                status.getValue(),
+        addEvent(new GameStarted(
                 currentTurn.getValue(),
-                startDate.getValue())).apply();
+                player1.getPieceColor().getValue(),
+                player1.getName().getValue(),
+                player2.getPieceColor().getValue(),
+                player2.getName().getValue(),
+                startDate.getValue(),
+                status.getValue(),
+                board.getBoxes()))
+                .apply();
     }
 
     public static Game from(final String id, List<DomainEvent> events) {
@@ -47,6 +58,18 @@ public class Game extends AggregateRoot<GameId> {
                 .filter(event -> id.equals(event.getAggregateRootId()))
                 .forEach((event) -> game.addEvent(event).apply());
         return game;
+    }
+
+    public void addMovement(CapturedPieces capturedPieces, Coordinate destination, MovementDate movementDate, Name playerName, Coordinate source, Board board) {
+        addEvent(new PieceMoved(
+                this.getId().getValue(),
+                playerName.getValue(),
+                destination.getValue(),
+                source.getValue(),
+                movementDate.getValue(),
+                capturedPieces.getValue(),
+                board.getBoxes()
+        ));
     }
 
     public Board getBoard() {

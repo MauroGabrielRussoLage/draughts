@@ -31,7 +31,7 @@ public class CreateUserCommand {
     }
 
     public User toUser() {
-        return new User(this.username, this.password, this.roles);
+        return new User(this.username, this.password, this.roles, this.name, this.lastname);
     }
 
     public String getName() {

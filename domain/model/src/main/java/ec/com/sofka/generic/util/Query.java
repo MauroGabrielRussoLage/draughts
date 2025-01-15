@@ -1,6 +1,6 @@
 package ec.com.sofka.generic.util;
 
-public abstract class Query {
+public class Query {
     private final String aggregateId;
 
     protected Query(String aggregateId) {

@@ -4,14 +4,32 @@ import java.util.List;
 
 public class User {
     private String id;
+    private String name;
+    private String lastname;
     private String username;
     private String password;
     private List<String> roles;
 
-    public User(String username, String password, List<String> roles) {
+    public User(String username, String password, List<String> roles, String name, String lastname) {
         this.username = username;
         this.password = password;
         this.roles = roles;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getId() {

@@ -1,29 +1,46 @@
 package ec.com.sofka.entity.board.value.object;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import ec.com.sofka.generic.interfaces.ValueObject;
 
 public class Box implements ValueObject<String> {
-    private final String value;
+    private final String username;
+    private final String pieceState;
 
     public Box() {
-        this.value = null;
+        this.pieceState = null;
+        this.username = null;
     }
 
-    public Box(final String value) {
-        this.value = validate(value);
+    public Box(final String username, final String pieceState) {
+        this.username = validateUserName(username);
+        this.pieceState = validatePieceType(pieceState);
     }
 
-    public static Box of(final String value) {
-        return new Box(value);
+    public static Box of(final String username, final String pieceType) {
+        return new Box(username, pieceType);
     }
 
+    @JsonIgnore
     @Override
     public String getValue() {
-        return value;
+        return username;
     }
 
-    private String validate(final String value) {
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPieceState() {
+        return username;
+    }
+
+    private String validateUserName(final String username) {
         //TODO Validaciones
-        return value;
+        return username;
+    }
+
+    private String validatePieceType(String pieceState) {
+       return pieceState;
     }
 }
